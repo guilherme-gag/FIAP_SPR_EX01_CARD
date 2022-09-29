@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:h2:~/fiap-card;DB_CLOSE_ON_EXIT=FALSE
+    username: fiap
+    password: fiap
+  batch:
+    jdbc:
+      initialize-schema: always
+      schema: classpath:schema-h2.sql
+
+file:
+  resource: lista_alunos2.txt
+
