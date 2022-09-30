@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:~/fiap-card;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:tcp://localhost:9090/file:C:/Users/logonrmlocal/fiap-card
     username: fiap
     password: fiap
   batch:
