@@ -17,6 +17,7 @@ create table TB_CARD(
 
 create table TB_TRANSACTION(
  id int primary key auto_increment,
+ student_id int, foreign key (student_id) references TB_STUDENT(id),
  card_id int, foreign key (card_id) references TB_CARD(id),
  description varchar(100),
  amount double

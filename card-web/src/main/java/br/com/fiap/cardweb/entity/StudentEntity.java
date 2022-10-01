@@ -42,8 +42,8 @@ public class StudentEntity {
     public StudentEntity() {
     }
 
-    public StudentEntity(StudentCreateUpdateDTO createUpdateStudentDTO) {
-        this.name = createUpdateStudentDTO.getName();
-        this.document = createUpdateStudentDTO.getDocument();
+    public StudentEntity(StudentCreateUpdateDTO dto) {
+        this.name = dto.getName();
+        this.document = dto.getDocument();
     }
 }
