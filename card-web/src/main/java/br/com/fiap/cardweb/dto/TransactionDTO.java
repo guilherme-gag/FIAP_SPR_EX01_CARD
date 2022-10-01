@@ -39,4 +39,7 @@ public class TransactionDTO {
         this.description = entity.getDescription();
         this.amount = entity.getAmount();
     }
+    public TransactionDTO() {
+    }
+
 }

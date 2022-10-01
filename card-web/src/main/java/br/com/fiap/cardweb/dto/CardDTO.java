@@ -77,4 +77,6 @@ public class CardDTO {
       this.cvv = "***";
       this.brand= entity.getBrand();
    }
+   public CardDTO() {
+   }
 }

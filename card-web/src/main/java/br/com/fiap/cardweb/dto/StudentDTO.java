@@ -36,4 +36,7 @@ public class StudentDTO {
         this.document = entity.getDocument();
         this.name = entity.getName();
     }
+
+    public StudentDTO() {
+    }
 }
