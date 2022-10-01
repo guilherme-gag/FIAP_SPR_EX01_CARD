@@ -20,6 +20,7 @@ Tecnlogias: Java 17, Spring Framewok, H2 Database, Rest API.
 
 ## Swagger <img align="left" alt="Rest" width="30px" src="https://icon-library.com/images/rest-api-icon/rest-api-icon-1.jpg" />
 - Documentação Swagger para exibição dos endpoint da aplicação "card-web".
+Endereço: http://localhost:8081/api/swagger-ui.html#/
 
 
 
