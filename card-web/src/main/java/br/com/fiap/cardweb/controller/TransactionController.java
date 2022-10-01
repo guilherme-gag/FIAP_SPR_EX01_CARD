@@ -34,8 +34,7 @@ public class TransactionController {
     }
 
     //TODO: Ajustar mapeamento do metodo
-    @RequestMapping("students/{studentId}/transactions")
-    @GetMapping
+    @RequestMapping(value = "students/{studentId}/transactions", method = RequestMethod.GET)
     public List<TransactionDTO> list(@PathVariable Long studentId) {
         return service.listAll(studentId);
     }
