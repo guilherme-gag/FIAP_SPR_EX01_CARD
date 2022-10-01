@@ -38,12 +38,18 @@ public class SwaggerUiWebMvcConfigurer implements WebMvcConfigurer {
                 addResourceHandler(baseUrl + "/swagger-ui/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/")
                 .resourceChain(false);
+        registry.addResourceHandler("/api/swagger-ui.html**").addResourceLocations("classpath:/META-INF/resources/swagger-ui.html");
+        registry.addResourceHandler("/api/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController(baseUrl + "/swagger-ui/")
                 .setViewName("forward:" + baseUrl + "/swagger-ui/index.html");
+        registry.addRedirectViewController("/api/v2/api-docs", "/v2/api-docs");
+        registry.addRedirectViewController("/api/swagger-resources/configuration/ui", "/swagger-resources/configuration/ui");
+        registry.addRedirectViewController("/api/swagger-resources/configuration/security", "/swagger-resources/configuration/security");
+        registry.addRedirectViewController("/api/swagger-resources", "/swagger-resources");
     }
 
     @Override
@@ -72,4 +78,6 @@ public class SwaggerUiWebMvcConfigurer implements WebMvcConfigurer {
     private boolean shouldRegisterLinksMapping(WebEndpointProperties webEndpointProperties, Environment environment, String basePath) {
         return webEndpointProperties.getDiscovery().isEnabled() && (StringUtils.hasText(basePath) || ManagementPortType.get(environment).equals(ManagementPortType.DIFFERENT));
     }
+
+
 }
