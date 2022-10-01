@@ -11,10 +11,14 @@ import br.com.fiap.cardweb.repository.CardRepository;
 import br.com.fiap.cardweb.repository.StudentRepository;
 import br.com.fiap.cardweb.repository.TransactionRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,4 +73,30 @@ public class TransactionServiceImpl implements TransactionService{
                 .map(TransactionDTO::new)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void writeToCsv(Writer writer, Long id) {
+
+        var transactionDTO = findById(id);
+        try (CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.Builder.create().setDelimiter(';').setHeader("ID", "AMOUNT", "DESCRIPTION").build())) {
+            csvPrinter.printRecord(transactionDTO.getId(), transactionDTO.getAmount(),transactionDTO.getDescription());
+        } catch (IOException e) {
+
+        }
+    }
+
+    @Override
+    public void writeListToCsv(Writer writer, Long studentId, Long cardId) {
+
+        List<TransactionDTO> transactionDTOList = listAll(studentId, cardId);
+        try (CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.Builder.create().setDelimiter(';').setHeader("ID", "AMOUNT", "DESCRIPTION").build())) {
+            for (TransactionDTO transactionDTO : transactionDTOList) {
+                csvPrinter.printRecord(transactionDTO.getId(), transactionDTO.getAmount(),transactionDTO.getDescription());
+            }
+        } catch (IOException e) {
+
+        }
+
+    }
+
 }

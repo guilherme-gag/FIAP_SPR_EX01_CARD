@@ -1,14 +1,9 @@
 package br.com.fiap.cardweb.service;
 
-import br.com.fiap.cardweb.dto.CardCreateDTO;
-import br.com.fiap.cardweb.dto.CardDTO;
 import br.com.fiap.cardweb.dto.TransactionCreateDTO;
 import br.com.fiap.cardweb.dto.TransactionDTO;
-import br.com.fiap.cardweb.repository.CardRepository;
-import br.com.fiap.cardweb.repository.StudentRepository;
-import br.com.fiap.cardweb.repository.TransactionRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.Writer;
 import java.util.List;
 
 public interface TransactionService {
@@ -20,4 +15,9 @@ public interface TransactionService {
     List<TransactionDTO> listAll(long studentId);
 
     List<TransactionDTO> listAll(long studentId,long cardId);
+
+    void writeToCsv(Writer writer, Long id);
+
+    void writeListToCsv(Writer writer, Long studentId, Long cardId);
+
 }

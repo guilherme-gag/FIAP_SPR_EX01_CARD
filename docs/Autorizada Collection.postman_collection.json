@@ -239,27 +239,58 @@
 			"name": "Transactions",
 			"item": [
 				{
-					"name": "/students/{studentId}/cards/{cardId}/transactions",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8081/students/1/cards/3/transactions",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8081",
-							"path": [
-								"students",
-								"1",
-								"cards",
-								"3",
-								"transactions"
-							]
+					"name": "Download file",
+					"item": [
+						{
+							"name": "/students/{studentId}/cards/{cardId}/transactions{id}/download",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/students/1/cards/3/transactions/2/download",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"students",
+										"1",
+										"cards",
+										"3",
+										"transactions",
+										"2",
+										"download"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/students/{studentId}/cards/{cardId}/transactions Copy",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/students/1/cards/3/transactions/download",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"students",
+										"1",
+										"cards",
+										"3",
+										"transactions",
+										"download"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
 				},
 				{
 					"name": "/students/{studentId}/cards/{cardId}/transactions{id}",
@@ -286,13 +317,36 @@
 					"response": []
 				},
 				{
+					"name": "/students/{studentId}/cards/{cardId}/transactions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/students/1/cards/3/transactions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"students",
+								"1",
+								"cards",
+								"3",
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "/students/{studentId}/cards/{cardId}/transactions{id}",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"description\":\"description test 2\",\r\n    \"amount\":\"200.02\"\r\n}",
+							"raw": "{\r\n    \"description\":\"description test 5\",\r\n    \"amount\":\"500.05\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
