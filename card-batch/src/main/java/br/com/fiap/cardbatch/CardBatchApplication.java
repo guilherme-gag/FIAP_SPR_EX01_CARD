@@ -36,6 +36,7 @@ public class CardBatchApplication {
 				.name("User item reader")
 				.fixedLength()
 				.columns(new Range(1,41), new Range(42,55))
+				.strict(false)
 				.names("name", "document")
 				.resource(resource)
 				.targetType(Student.class)
@@ -44,8 +45,10 @@ public class CardBatchApplication {
 
 	@Bean
 	public ItemProcessor<Student, Student> itemProcessor() {
-
 		return student -> {
+			if(student == null || student.getName().contains("-") || student.getName().length()==0){
+				return null;
+			}
 			student.setName(student.getName().toUpperCase());
 			student.setDocument(student.getDocument().replaceAll("[^\\d]", ""));
 			return student;

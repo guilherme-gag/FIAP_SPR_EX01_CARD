@@ -9,5 +9,5 @@ spring:
       schema: classpath:schema-h2.sql
 
 file:
-  resource: lista_alunos2.txt
+  resource: lista_alunos.txt
 
