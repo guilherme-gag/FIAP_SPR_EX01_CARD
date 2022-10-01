@@ -1,5 +1,6 @@
 package br.com.fiap.cardbatch;
 
+import br.com.fiap.cardbatch.model.Card;
 import br.com.fiap.cardbatch.model.Student;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -80,9 +81,65 @@ public class CardBatchApplication {
 
 	@Bean
 	public Job job(JobBuilderFactory jobBuilderFactory,
-				   Step step){
+				   Step step,Step stepCard){
 		return jobBuilderFactory.get("csv2db job")
 				.start(step)
+				.next(stepCard)
 				.build();
 	}
+
+
+
+
+
+
+
+
+
+
+
+	@Bean
+	public ItemReader<Card> itemReaderCard(@Value("${file.resource-cartao}") Resource resource) {
+		return new FlatFileItemReaderBuilder<Card>()
+				.name("Card item reader")
+				.fixedLength()
+				.columns(new Range(1,21), new Range(22,29), new Range(30,31), new Range(32,35), new Range(36,39), new Range(40,51), new Range(52,52))
+				//.strict(false)
+				.names("label", "number", "expMonth", "expYear", "cvv", "brand", "student_id")
+				.resource(resource)
+				.targetType(Card.class)
+				.build();
+	}
+
+	@Bean
+	public ItemProcessor<Card, Card> itemProcessorCard() {
+		return card -> {
+			return card;
+		};
+	}
+
+	@Bean
+	public ItemWriter<Card> itemWriterCard(DataSource dataSource){
+		return new JdbcBatchItemWriterBuilder<Card>()
+				.dataSource(dataSource)
+				.beanMapped()
+				.sql("insert into TB_CARD(label,number,exp_Month,exp_Year, cvv, brand, student_id) values (:label,:number,:expMonth,:expYear,:cvv,:brand,:student_id)")
+				.build();
+	}
+
+	@Bean
+	public Step stepCard(StepBuilderFactory stepBuilderFactory,
+						 ItemReader<Card> itemReader,
+						 ItemProcessor<Card, Card> itemProcessor,
+						 ItemWriter<Card> itemWriter){
+		return stepBuilderFactory.get("txt to database step")
+				.<Card, Card>chunk(100)
+				.reader(itemReader)
+				.processor(itemProcessor)
+				.writer(itemWriter)
+				.allowStartIfComplete(true)
+				.build();
+	}
+
+
 }
