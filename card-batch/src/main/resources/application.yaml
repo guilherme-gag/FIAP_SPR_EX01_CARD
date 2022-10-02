@@ -9,7 +9,7 @@ spring:
       schema: classpath:schema-h2.sql
 
 file:
-  resource: lista_alunos.txt
-  resource-cartao: lista_cartoes2.txt
+  resource-aluno: lista_alunos.txt
+  resource-cartao: lista_cartoes.txt
   resource-transacao: lista_transacoes.txt
 

@@ -12,9 +12,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
-import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
-import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.file.transform.Range;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -33,13 +31,11 @@ public class CardBatchApplication {
 	}
 
 	//JOB
-
-
 	@Bean
 	public Job job(JobBuilderFactory jobBuilderFactory,
-				   Step step,Step stepCard, Step stepTransaction){
+				   Step stepStudent,Step stepCard, Step stepTransaction){
 		return jobBuilderFactory.get("csv2db job")
-				.start(step)
+				.start(stepStudent)
 				.next(stepCard)
 				.next(stepTransaction)
 				.build();
@@ -47,9 +43,9 @@ public class CardBatchApplication {
 
 	//ALUNOS
 	@Bean
-	public ItemReader<Student> itemReader(@Value("${file.resource}") Resource resource) {
+	public ItemReader<Student> itemReaderStudent(@Value("${file.resource-aluno}") Resource resource) {
 		return new FlatFileItemReaderBuilder<Student>()
-				.name("User item reader")
+				.name("Student item reader")
 				.fixedLength()
 				.columns(new Range(1,41), new Range(42,55))
 				.strict(false)
@@ -60,7 +56,7 @@ public class CardBatchApplication {
 	}
 
 	@Bean
-	public ItemProcessor<Student, Student> itemProcessor() {
+	public ItemProcessor<Student, Student> itemProcessorStudent() {
 		return student -> {
 			if(student == null || student.getName().contains("-") || student.getName().length()==0){
 				return null;
@@ -72,7 +68,7 @@ public class CardBatchApplication {
 	}
 
 	@Bean
-	public ItemWriter<Student> itemWriter(DataSource dataSource){
+	public ItemWriter<Student> itemWriterStudent(DataSource dataSource){
 		return new JdbcBatchItemWriterBuilder<Student>()
 				.dataSource(dataSource)
 				.beanMapped()
@@ -81,11 +77,11 @@ public class CardBatchApplication {
 	}
 
 	@Bean
-	public Step step(StepBuilderFactory stepBuilderFactory,
+	public Step stepStudent(StepBuilderFactory stepBuilderFactory,
 					 ItemReader<Student> itemReader,
 					 ItemProcessor<Student, Student> itemProcessor,
 					 ItemWriter<Student> itemWriter){
-		return stepBuilderFactory.get("csv to database step")
+		return stepBuilderFactory.get("txt student to database step")
 				.<Student, Student>chunk(100)
 				.reader(itemReader)
 				.processor(itemProcessor)
@@ -95,9 +91,7 @@ public class CardBatchApplication {
 	}
 
 
-
 	//CARTOES
-
 	@Bean
 	public ItemReader<Card> itemReaderCard(@Value("${file.resource-cartao}") Resource resource) {
 		return new FlatFileItemReaderBuilder<Card>()
@@ -140,9 +134,6 @@ public class CardBatchApplication {
 				.allowStartIfComplete(true)
 				.build();
 	}
-
-
-
 
 	//TRANSACOES
 	@Bean
