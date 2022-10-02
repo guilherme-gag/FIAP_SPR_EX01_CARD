@@ -1,0 +1,4 @@
+01Compra no supermercado                         00013.00
+02Compra no shopping                             00025.50
+03Compra na C&A                                  00050.20
+04Compra na Roxolandia                           00666.66

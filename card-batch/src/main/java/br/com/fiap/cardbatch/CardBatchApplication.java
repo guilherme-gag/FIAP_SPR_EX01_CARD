@@ -2,6 +2,7 @@ package br.com.fiap.cardbatch;
 
 import br.com.fiap.cardbatch.model.Card;
 import br.com.fiap.cardbatch.model.Student;
+import br.com.fiap.cardbatch.model.Transaction;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -31,6 +32,20 @@ public class CardBatchApplication {
 		SpringApplication.run(CardBatchApplication.class, args);
 	}
 
+	//JOB
+
+
+	@Bean
+	public Job job(JobBuilderFactory jobBuilderFactory,
+				   Step step,Step stepCard, Step stepTransaction){
+		return jobBuilderFactory.get("csv2db job")
+				.start(step)
+				.next(stepCard)
+				.next(stepTransaction)
+				.build();
+	}
+
+	//ALUNOS
 	@Bean
 	public ItemReader<Student> itemReader(@Value("${file.resource}") Resource resource) {
 		return new FlatFileItemReaderBuilder<Student>()
@@ -79,24 +94,9 @@ public class CardBatchApplication {
 				.build();
 	}
 
-	@Bean
-	public Job job(JobBuilderFactory jobBuilderFactory,
-				   Step step,Step stepCard){
-		return jobBuilderFactory.get("csv2db job")
-				.start(step)
-				.next(stepCard)
-				.build();
-	}
 
 
-
-
-
-
-
-
-
-
+	//CARTOES
 
 	@Bean
 	public ItemReader<Card> itemReaderCard(@Value("${file.resource-cartao}") Resource resource) {
@@ -104,7 +104,7 @@ public class CardBatchApplication {
 				.name("Card item reader")
 				.fixedLength()
 				.columns(new Range(1,21), new Range(22,29), new Range(30,31), new Range(32,35), new Range(36,39), new Range(40,51), new Range(52,52))
-				//.strict(false)
+				.strict(false)
 				.names("label", "number", "expMonth", "expYear", "cvv", "brand", "student_id")
 				.resource(resource)
 				.targetType(Card.class)
@@ -141,5 +141,51 @@ public class CardBatchApplication {
 				.build();
 	}
 
+
+
+
+	//TRANSACOES
+	@Bean
+	public ItemReader<Transaction> itemReaderTransaction(@Value("${file.resource-transacao}") Resource resource) {
+		return new FlatFileItemReaderBuilder<Transaction>()
+				.name("Transaction item reader")
+				.fixedLength()
+				.columns(new Range(1,2), new Range(3,49), new Range(50,57))
+				//.strict(false)
+				.names("cardId", "description", "amount")
+				.resource(resource)
+				.targetType(Transaction.class)
+				.build();
+	}
+
+	@Bean
+	public ItemProcessor<Transaction, Transaction> itemProcessorTransaction() {
+		return transaction -> {
+			return transaction;
+		};
+	}
+
+	@Bean
+	public ItemWriter<Transaction> itemWriterTransaction(DataSource dataSource){
+		return new JdbcBatchItemWriterBuilder<Transaction>()
+				.dataSource(dataSource)
+				.beanMapped()
+				.sql("insert into TB_TRANSACTION (card_id,student_id,description,amount)  values (:cardId,(SELECT MAX(student_id) FROM TB_CARD WHERE id = :cardId),:description,:amount)")
+				.build();
+	}
+
+	@Bean
+	public Step stepTransaction(StepBuilderFactory stepBuilderFactory,
+						 ItemReader<Transaction> itemReader,
+						 ItemProcessor<Transaction, Transaction> itemProcessor,
+						 ItemWriter<Transaction> itemWriter){
+		return stepBuilderFactory.get("txt to database transaction")
+				.<Transaction, Transaction>chunk(100)
+				.reader(itemReader)
+				.processor(itemProcessor)
+				.writer(itemWriter)
+				.allowStartIfComplete(true)
+				.build();
+	}
 
 }
